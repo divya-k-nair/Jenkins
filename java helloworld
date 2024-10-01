@@ -1,17 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'openjdk:11' // Use Docker image with OpenJDK 11
-        }
-    }
+    agent any  // Use the default agent on Ubuntu
+
     stages {
-        stage('Checkout') {
+        stage('Create Java Program') {
             steps {
-                // Checkout the code from the repository (if using Git)
-                // Example:
-                // git 'https://github.com/your-username/your-repo.git'
-                
-                // For this example, we dynamically create the HelloWorld.java file
+                // Create HelloWorld.java dynamically
                 script {
                     sh '''
                     echo "public class HelloWorld {" > HelloWorld.java
@@ -34,6 +27,14 @@ pipeline {
                 // Run the compiled Java program
                 sh 'java HelloWorld'
             }
+        }
+    }
+    post {
+        success {
+            echo 'Build succeeded and HelloWorld.java ran successfully!'
+        }
+        failure {
+            echo 'Build failed. Check the logs for more details.'
         }
     }
 }
