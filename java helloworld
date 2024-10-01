@@ -1,0 +1,39 @@
+pipeline {
+    agent {
+        docker {
+            image 'openjdk:11' // Use Docker image with OpenJDK 11
+        }
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository (if using Git)
+                // Example:
+                // git 'https://github.com/your-username/your-repo.git'
+                
+                // For this example, we dynamically create the HelloWorld.java file
+                script {
+                    sh '''
+                    echo "public class HelloWorld {" > HelloWorld.java
+                    echo "    public static void main(String[] args) {" >> HelloWorld.java
+                    echo "        System.out.println(\\"Hello, World!\\");" >> HelloWorld.java
+                    echo "    }" >> HelloWorld.java
+                    echo "}" >> HelloWorld.java
+                    '''
+                }
+            }
+        }
+        stage('Compile') {
+            steps {
+                // Compile the Java program
+                sh 'javac HelloWorld.java'
+            }
+        }
+        stage('Run') {
+            steps {
+                // Run the compiled Java program
+                sh 'java HelloWorld'
+            }
+        }
+    }
+}
